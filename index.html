@@ -91,7 +91,7 @@
 		var is_touch_device = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 		
 		document.body.addEventListener('touchmove',function(event){event.preventDefault();},false); 
-		
+
 		svg.on(is_touch_device?"touchstart":"mousedown",function(){
 			d3.event.stopPropagation();
 			current=lines.append("path")
@@ -105,11 +105,16 @@
 		.on(is_touch_device?"touchmove":"mousemove",function(){
 			d3.event.preventDefault();
 			d3.event.stopPropagation();
-			var x=Math.round(xscale.invert(d3.mouse(this)[0]-padding)),
-				y=Math.round(yscale.invert(d3.mouse(this)[1]-padding));
+			var x=(xscale.invert(d3.mouse(this)[0]-padding)),
+				y=(yscale.invert(d3.mouse(this)[1]-padding));
+
+			if (Math.abs(x-Math.round(x))>0.25 && Math.abs(y-Math.round(y))>0.25) {
+				return;
+			}
+
 			var point={
-				x:x,
-				y:y
+				x:Math.round(x),
+				y:Math.round(y)
 			}
 			if(current) {
 				
