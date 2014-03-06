@@ -18,10 +18,13 @@
 		#dots circle {
 			fill:#000;
 		}
+		#dots .visible circle {
+			fill:#999;
+		}
 		#lines path {
 			stroke:#333;
 			fill:none;
-			stroke-width:2;
+			stroke-width:3;
 		}
 	</style>
 </head>
@@ -45,25 +48,28 @@
 							y=d3.mouse(this)[1];
 						console.log("POSITION:",Math.round(xscale.invert(x)),Math.round(yscale.invert(y)));
 					})*/
+		var n=10-1;
 
-
-		var xscale=d3.scale.linear().domain([0,4]).range([0,WIDTH-padding*2]),
-			yscale=d3.scale.linear().domain([0,4]).range([0,HEIGHT-padding*2]);
+		var xscale=d3.scale.linear().domain([0,n-1]).range([0,WIDTH-padding*2]).clamp(true),
+			yscale=d3.scale.linear().domain([0,n-1]).range([0,HEIGHT-padding*2]).clamp(true);
 
 		var dots=svg.append("g")
 					.attr("id","dots")
 					.attr("transform","translate("+padding+","+padding+")")
-
+		
 		dots.selectAll("g.circle")
-				.data(d3.range(5*5).map(function(d,i){
+				.data(d3.range(n*n).map(function(d,i){
 					return {
-						x:i%5,
-						y:Math.floor(i/5)
+						x:i%n,
+						y:Math.floor(i/n)
 					}
 				}))
 				.enter()
 				.append("g")
 					.attr("class","circle")
+					.classed("visible",function(d,i){
+						return i%2 || Math.floor(i/n)%2;
+					})
 					.attr("transform",function(d){
 
 						return "translate("+xscale(d.x)+","+yscale(d.y)+")"
@@ -71,7 +77,9 @@
 					.append("circle")
 						.attr("cx",0)
 						.attr("cy",0)
-						.attr("r",5)
+						.attr("r",function(d,i){
+							return (i%2 || Math.floor(i/n)%2)?2:8
+						})
 
 		var lines=svg.append("g")
 					.attr("id","lines")
@@ -84,7 +92,7 @@
 		var line = d3.svg.line()
 				    .x(function(d) { return xscale(d.x); })
 				    .y(function(d) { return yscale(d.y); })
-				    .interpolate("basis");
+				    //.interpolate("basis");
 
 		var current_points=[];
 
@@ -108,7 +116,7 @@
 			var x=(xscale.invert(d3.mouse(this)[0]-padding)),
 				y=(yscale.invert(d3.mouse(this)[1]-padding));
 
-			if (Math.abs(x-Math.round(x))>0.25 && Math.abs(y-Math.round(y))>0.25) {
+			if (Math.abs(x-Math.round(x))>0.125 && Math.abs(y-Math.round(y))>0.125) {
 				return;
 			}
 
@@ -122,9 +130,21 @@
 
 					current_points.push(point)
 
-					console.log(JSON.stringify(current_points))
+					//console.log(JSON.stringify(current_points))
 
-					current.attr("d",line(current_points))
+					current.attr("d",function(){
+						
+						//console.log("--->",current_points[0],current_points[current_points.length-1])
+
+						if(current_points.length>1 && isSame(current_points[0],current_points[current_points.length-1])) {
+							//current_points.shift();
+							//current_points.push(current_points[0]);
+						}
+
+						var path=line(current_points);
+						return path;
+
+					})
 
 				}
 				
