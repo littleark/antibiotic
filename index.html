@@ -89,7 +89,9 @@
 		var current_points=[];
 
 		var is_touch_device = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
-		alert(is_touch_device)
+		
+		document.body.addEventListener('touchmove',function(event){event.preventDefault();},false); 
+		
 		svg.on(is_touch_device?"touchstart":"mousedown",function(){
 			d3.event.stopPropagation();
 			current=lines.append("path")
