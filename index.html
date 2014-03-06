@@ -87,15 +87,20 @@
 
 		var current_points=[];
 
-		svg.on("mousedown",function(){
+		var is_touch_device = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
+		alert(is_touch_device)
+		svg.on(is_touch_device?"touchstart":"mousedown",function(){
+			d3.event.stopPropagation();
 			current=lines.append("path")
 			current_points=[];
 		})
-		.on("mouseup",function(){
+		.on(is_touch_device?"touchend":"mouseup",function(){
+			d3.event.stopPropagation();
 			current=null;
 
 		})
-		.on("mousemove",function(){
+		.on(is_touch_device?"touchmove":"mousemove",function(){
+			d3.event.stopPropagation();
 			var x=Math.round(xscale.invert(d3.mouse(this)[0]-padding)),
 				y=Math.round(yscale.invert(d3.mouse(this)[1]-padding));
 			var point={
