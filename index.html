@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=yes" />
 	<title>antibiotic</title>
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<script src="js/vendors/d3.v3.min.js"></script>
@@ -100,6 +101,7 @@
 
 		})
 		.on(is_touch_device?"touchmove":"mousemove",function(){
+			d3.event.preventDefault();
 			d3.event.stopPropagation();
 			var x=Math.round(xscale.invert(d3.mouse(this)[0]-padding)),
 				y=Math.round(yscale.invert(d3.mouse(this)[1]-padding));
