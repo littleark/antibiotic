@@ -31,10 +31,18 @@
 			height: 600px;
 			margin:50px auto 0;
 		}
+		#clean {
+			position:absolute;
+			bottom: 10px;
+			right: 10px;
+			font-size: 13px;
+			color:#666;
+		}
 	</style>
 </head>
 <body>
 	<div id="square"></div>
+	<a href="#" id="clean">ERASE TATTOO</a>
 	<script>
 
 		var WIDTH=600,
@@ -156,6 +164,17 @@
 			}
 			
 		})
+
+		d3.select("#clean")
+			.on("click",function(){
+				current_points=[];
+				current=null;
+				svg.selectAll("path")
+						.transition()
+						.duration(1000)
+						.style("opacity",0)
+						.remove();
+			})
 
 		function isSame(p1,p2) {
 			return p1.x==p2.x && p1.y==p2.y;
